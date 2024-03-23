@@ -1,0 +1,33 @@
+﻿@model Ship
+<style>
+    .FormContainerStyle {
+        width: 360px;
+        border-radius: 8px;
+        border: 1px solid #ccc; 
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); 
+        padding: 20px; 
+    }
+</style>
+
+<div class="FormContainerStyle">
+    <form asp-action="SaveShip" asp-controller="Admin" method="post">
+        <div class="form-group">
+            <label for="Model">Modelis:</label>
+            <input type="text" class="form-control" id="Model" name="Model" required>
+        </div>
+        <div class="form-group">
+            <label for="Length">Ilgis:</label>
+            <input type="number" class="form-control" id="Length" name="Length" required>
+        </div>
+        <div class="form-group">
+            <label for="Width">Plotis:</label>
+            <input type="number" class="form-control" id="Width" name="Width" required>
+        </div>
+        <div class="form-group">
+            <label for="Height">Aukštis:</label>
+            <input type="number" class="form-control" id="Height" name="Height" required>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Įrašyti</button>
+    </form>
+</div>

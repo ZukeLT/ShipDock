@@ -1,0 +1,29 @@
+﻿@model User
+<style>
+    .FormContainerStyle {
+        width: 360px;
+        border-radius: 8px;
+        border: 1px solid #ccc; 
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); 
+        padding: 20px; 
+    }
+</style>
+
+<div class="FormContainerStyle">
+    <form asp-action="SaveUser" asp-controller="Admin" method="post">
+        <div class="form-group">
+            <label for="Username">Vartotojas:</label>
+            <input type="text" class="form-control" id="Username" name="Username" required>
+        </div>
+        <div class="form-group">
+            <label for="Password">Slaptažodis:</label>
+            <input type="text" class="form-control" id="Password" name="Password" required>
+        </div>
+        <div class="form-group">
+            <label for="Role">Role:</label>
+            <input type="text" class="form-control" id="Role" name="Role" required>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Įrašyti</button>
+    </form>
+</div>

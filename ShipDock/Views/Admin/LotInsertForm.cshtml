@@ -1,0 +1,33 @@
+﻿@model Lot
+<style>
+    .FormContainerStyle {
+        width: 360px;
+        border-radius: 8px;
+        border: 1px solid #ccc; 
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1); 
+        padding: 20px; 
+    }
+</style>
+
+<div class="FormContainerStyle">
+    <form asp-action="SaveLot" asp-controller="Admin" method="post">
+        <div class="form-group">
+            <label for="Code">Modelis:</label>
+            <input type="text" class="form-control" id="Code" name="Code" required>
+        </div>
+        <div class="form-group">
+            <label for="X_Dim">Ilgis:</label>
+            <input type="number" class="form-control" id="X_Dim" name="X_Dim" required>
+        </div>
+        <div class="form-group">
+            <label for="Y_Dim">Plotis:</label>
+            <input type="number" class="form-control" id="Y_Dim" name="Y_Dim" required>
+        </div>
+        <div class="form-group">
+            <label for="Z_dim">Aukštis:</label>
+            <input type="number" class="form-control" id="Z_dim" name="Z_dim" required>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Įrašyti</button>
+    </form>
+</div>

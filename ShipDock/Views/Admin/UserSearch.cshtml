@@ -1,0 +1,51 @@
+﻿@model IEnumerable<User>
+
+@{
+    ViewData["Title"] = "Vartotojai";
+}
+
+<h1>
+    @ViewData["Title"].ToString()
+</h1>
+<h2>Įvedimas</h2>
+<div>
+    @Html.Partial("UserInsertForm", new User())
+</div>
+<br />
+<h2>Vartotojų sąrašas</h2>
+<table class="table table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Vartotojas</th>
+            <th scope="col">Slaptažodis</th>
+            <th scope="col">Role</th>
+            <th scope="col">Veiksmas</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>
+                    @user.ID
+                </td>
+                <td>
+                    @user.Username
+                </td>
+                <td>
+                    @user.Password
+                </td>
+                <td>
+                    @user.ToRoleString()
+                </td>
+                <td>
+                    <form asp-controller="Admin" asp-action="DeleteUser" method="post">
+                        <input type="hidden" name="id" value="@user.ID" />
+                        <button type="submit" class="btn btn-danger">Ištrinti</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
