@@ -76,9 +76,9 @@
                                 Administratoriams
                             </a>
                             <div class="dropdown-menu" aria-labelledby="AdminSystem">
-                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ShipSearch">Laivai</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="LotSearch">Aikštelės</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="UserSearch">Darbuotojai</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ShipList">Laivai</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="LotList">Aikštelės</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="UserList">Darbuotojai</a>
                             </div>
                         </li>
 
@@ -92,6 +92,7 @@
             </div>
         </nav>
     </header>
+    
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

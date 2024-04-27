@@ -1,36 +1,23 @@
-﻿namespace ShipDock.Models
+﻿using ShipDock.Helper;
+using System.Reflection;
+
+namespace ShipDock.Models
 {
     public class User
     {
         public int ID { get; set; }
         public string? Username { get; set; }
         public string? Password { get; set; }
-        public Role Role { get; set; }
-        public string ToRoleString()
+        public string? UserRole { get; set; }
+        public bool Insert()
         {
-            switch (this.Role)
+            if (ID == 0)
             {
-                case Role.None:
-                    return "Niekas";
-                case Role.Client:
-                    return "Klientas";
-                case Role.Dispetcher:
-                    return "Dispetčeris";
-                case Role.Worker:
-                    return "Darbininkas";
-                case Role.Admin:
-                    return "Administratorius";
-                default:
-                    return "WTF?";
+                return DataSource.UpdateDataSQL($"INSERT INTO [dbo].[User] ([Username],[Password],[UserRole]) " +
+                    $"VALUES ('{Username}','{Password}','{UserRole}')");
             }
+            return false;
         }
     }
 }
-    public enum Role{
-        None = 0,
-        Client = 1,
-        Dispetcher = 2,
-        Worker = 3,
-        Admin = 4
-    }
 

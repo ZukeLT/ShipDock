@@ -1,4 +1,18 @@
-﻿@model User
+﻿@using System.Data;
+@using ShipDock.Helper;
+@model User
+@{
+    DataView dw = (DataView)DataSource.ExecuteSelectSQL("SELECT * FROM UserRole");
+    List<string> roles = new List<string> { "Admin", "Manager", "Client" };
+    if (dw != null)
+    {
+        roles.Clear();
+        foreach (DataRow row in dw.Table.Rows)
+        {
+            roles.Add(row["RoleName"].ToString());
+        }
+    }
+}
 <style>
     .FormContainerStyle {
         width: 360px;
@@ -19,10 +33,13 @@
             <label for="Password">Slaptažodis:</label>
             <input type="text" class="form-control" id="Password" name="Password" required>
         </div>
-        <div class="form-group">
-            <label for="Role">Role:</label>
-            <input type="text" class="form-control" id="Role" name="Role" required>
-        </div>
+        <label for="UserRole">Role:</label>
+        <select class="form-control" id="UserRole" name="UserRole" required>
+            @foreach (var role in roles)
+            {
+                <option value="@role">@role</option>
+            }
+        </select>
         <br />
         <button type="submit" class="btn btn-primary">Įrašyti</button>
     </form>
