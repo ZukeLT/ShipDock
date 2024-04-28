@@ -7,7 +7,7 @@
 <h1 style="color: white;">
     @ViewData["Title"].ToString()
 </h1>
-<h2>Įvedimas</h2>
+<h2 style="color: white;">Įvedimas</h2>
 <div>
     @Html.Partial("ShipInsertForm", new Ship())
 </div>
@@ -16,19 +16,19 @@
 <table class="table table-dark">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Modelis</th>
-            <th scope="col">Ilgis</th>
-            <th scope="col">Plotis</th>
-            <th scope="col">Aukštis</th>
-            <th scope="col">Veiksmas</th>
+            <th style="color: white;" scope="col">ID</th>
+            <th style="color: white;" scope="col">Modelis</th>
+            <th style="color: white;" scope="col">Ilgis</th>
+            <th style="color: white;" scope="col">Plotis</th>
+            <th style="color: white;" scope="col">Aukštis</th>
+            <th style="color: white;" scope="col">Veiksmas</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var ship in Model)
         {
-            <tr>
-                <td>
+            <tr style="color: white;">
+                <td style="color: white;">
                     @ship.ID
                 </td>
                 <td>
