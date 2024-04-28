@@ -39,16 +39,18 @@ namespace ShipDock.Controllers.Admin
             Debug.WriteLine("Testyas");
             bool isValid = DataSource.UpdateDataSQL($"DELETE FROM Ship WHERE ShipID = {id}");
             if (isValid)
-            {
-            }
+                TempData["SuccessMessage"] = "Data Successfully Deleted";
             else
-            {
-            }
+                TempData["ErrorMessage"] = "Data Deletion Fail";
+            
             return RedirectToAction("ShipList");
         }
         public IActionResult SaveShip(Ship ship)
         {
-            ship.Insert();
+            if (ship.Insert())
+                TempData["SuccessMessage"] = "Data Successfully inserted";
+            else
+                TempData["ErrorMessage"] = "Data Insertion Fail";
 
             return RedirectToAction("ShipList");
         }
@@ -79,23 +81,18 @@ namespace ShipDock.Controllers.Admin
         {
             bool isValid = DataSource.UpdateDataSQL($"DELETE FROM [User] WHERE UserID = {id}");
             if (isValid)
-            {
-            }
+                TempData["SuccessMessage"] = "Data Successfully Deleted";
             else
-            {
-            }
+                TempData["ErrorMessage"] = "Data Deletion Fail";
+
             return RedirectToAction("UserList");
         }
         public IActionResult SaveUser(User user)
         {
             if (user.Insert())
-            {
-
-            }
+                TempData["SuccessMessage"] = "Data Successfully inserted";
             else
-            {
-                
-            }
+                TempData["ErrorMessage"] = "Data Insertion Fail";
 
             return RedirectToAction("UserList");
         }
@@ -131,16 +128,18 @@ namespace ShipDock.Controllers.Admin
         {
             bool isValid = DataSource.UpdateDataSQL($"DELETE FROM Lot WHERE LotID = {id}");
             if (isValid)
-            {
-            }
+                TempData["SuccessMessage"] = "Data Successfully Deleted";
             else
-            {
-            }
+                TempData["ErrorMessage"] = "Data Deletion Fail";
+
             return RedirectToAction("LotList");
         }
         public IActionResult SaveLot(Lot lot)
         {
-            lot.Insert();
+            if(lot.Insert())
+                TempData["SuccessMessage"] = "Data Successfully inserted";
+            else
+                TempData["ErrorMessage"] = "Data Insertion Fail";
 
             return RedirectToAction("LotList");
         }
