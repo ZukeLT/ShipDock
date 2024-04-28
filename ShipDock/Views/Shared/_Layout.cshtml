@@ -22,32 +22,68 @@
 
         ul li {
             list-style-type: none;
-            display: inline;
+            display: block; /* Change display to block */
         }
 
         .navbar-nav .nav-link {
-            display: inline-block;
+            display: block; /* Change display to block */
+            color: black; /* Change text color to black */
         }
 
         .ml-auto {
-            display: inline-block !important;
+            display: block !important; /* Change display to block */
         }
 
         .dropdown > .dropdown-toggle:active {
             pointer-events: none;
         }
+
+        .navbar {
+            background-color: white; /* Change navbar background color to white */
+            position: fixed; /* Fixed positioning to keep it on the left */
+            height: 100%; /* Make navbar height 100% of viewport */
+            padding-top: 3.5rem; /* Add padding to the top to avoid overlapping content */
+            left: 0; /* Align navbar to the left */
+            width: 200px; /* Set the width of the navbar */
+            z-index: 1000; /* Ensure the navbar stays on top */
+        }
+
+        .container-fluid {
+            padding-left: 0; /* Remove default padding on container */
+        }
+
+        .container {
+            margin-left: 200px; /* Add margin to the left for main content */
+            z-index: 1; /* Ensure the main content is behind the navbar */
+            position: relative; /* Add position relative to control z-index */
+        }
+
+        .navbar-brand {
+            padding: 0.5rem 1rem; /* Add padding to the brand */
+            margin-bottom: 0; /* Remove margin bottom */
+            color: black; /* Set color to black */
+            position: absolute; /* Position at the top of the navbar */
+            top: 0; /* Align at the top of the navbar */
+            left: 0; /* Align at the left of the navbar */
+            right: 0; /* Align at the right of the navbar */
+            text-align: center; /* Center align text */
+        }
+
+        .navbar-toggler {
+            display: none; /* Hide toggler on left sidebar */
+        }
+
+        body {
+            background-color: black;
+        }
     </style>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ShipDock</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="nav navbar-nav flex-grow-1">
+                    <ul class="nav navbar-nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Pagrindinis</a>
                         </li>
@@ -81,13 +117,7 @@
                                 <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="UserList">Darbuotojai</a>
                             </div>
                         </li>
-
                     </ul>
-                </div>
-                <div>
-                    <h3>
-                        @ViewData["Title"]
-                    </h3>
                 </div>
             </div>
         </nav>
