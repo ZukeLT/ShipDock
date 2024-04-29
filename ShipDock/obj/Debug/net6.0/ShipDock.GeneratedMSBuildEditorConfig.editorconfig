@@ -9,63 +9,61 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ShipDock
 build_property.RootNamespace = ShipDock
-build_property.ProjectDir = c:\Users\i73ig\Desktop\9Sq0sd22\KTU\3 kursas\Analize\ShipDock\ShipDock\
-build_property.EnableComHosting = 
-build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.ProjectDir = D:\Visual Studio Darbai\ShipDock\ShipDock\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = c:\Users\i73ig\Desktop\9Sq0sd22\KTU\3 kursas\Analize\ShipDock\ShipDock
+build_property.MSBuildProjectDirectory = D:\Visual Studio Darbai\ShipDock\ShipDock
 build_property._RazorSourceGeneratorDebug = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Admin/LotInsertForm.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Admin/LotInsertForm.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTG90SW5zZXJ0Rm9ybS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Admin/LotList.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Admin/LotList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cTG90TGlzdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Admin/ShipInsertForm.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Admin/ShipInsertForm.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU2hpcEluc2VydEZvcm0uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Admin/ShipList.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Admin/ShipList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cU2hpcExpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Admin/UserInsertForm.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Admin/UserInsertForm.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlckluc2VydEZvcm0uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Admin/UserList.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Admin/UserList.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlckxpc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Home/Index.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Home/Privacy.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Shared/Error.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/_ViewImports.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/_ViewStart.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/i73ig/Desktop/9Sq0sd22/KTU/3 kursas/Analize/ShipDock/ShipDock/Views/Shared/_Layout.cshtml]
+[D:/Visual Studio Darbai/ShipDock/ShipDock/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-qxf5lnfgs1
