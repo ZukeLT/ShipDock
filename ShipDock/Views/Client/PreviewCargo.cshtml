@@ -1,0 +1,19 @@
+@model Cargo
+
+@{
+    ViewData["Title"] = "Peržiūrėti krovinį";
+}
+<h1 style="color: white;">
+    @ViewData["Title"].ToString()
+</h1>
+<h2 style="color: white;">Krovinio informacija</h2>
+<div class="card text-white bg-dark mb-3">
+    <div class="card-header">Krovinio ID: @Model.ID</div>
+    <div class="card-body">
+        <h5 class="card-title">Pavadinimas: @Model.Name</h5>
+        <p class="card-text">Svoris: @Model.Weight</p>
+        <p class="card-text">Tūris: @Model.Volume</p>
+        <!-- Add more details if needed -->
+    </div>
+</div>
+<button onclick="window.history.back()" class="btn btn-secondary">Grįžti</button>
