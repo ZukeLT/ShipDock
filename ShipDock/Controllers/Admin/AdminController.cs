@@ -103,10 +103,6 @@ namespace ShipDock.Controllers.Admin
         {
             List<Lot> lotList = new List<Lot>();
             DataView dw = (DataView)DataSource.ExecuteSelectSQL("SELECT * FROM Lot");
-            for (int i = 0; i < 10; i++)
-            {
-
-            }
             if (dw != null)
             {
                 foreach (DataRow row in dw.Table.Rows)

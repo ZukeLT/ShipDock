@@ -1,0 +1,92 @@
+﻿@model Schedule
+@using ShipDock.Helper;
+@using System.Data;
+
+@{
+    DataView dw = (DataView)DataSource.ExecuteSelectSQL("SELECT ShipID FROM Ship");
+    DataView dw2 = (DataView)DataSource.ExecuteSelectSQL("SELECT * FROM Route");
+    DataView dw3 = (DataView)DataSource.ExecuteSelectSQL("SELECT DockID FROM Dock");
+    List<Route> routes = new List<Route>();
+    List<int> shipIDS = new List<int>();
+    List<int> dockIDS = new List<int>();
+    if(dw != null)
+    {
+        foreach(DataRow row in dw.Table.Rows)
+        {
+            shipIDS.Add(int.Parse(row["ShipID"].ToString()));
+        }
+    }
+    if(dw2 != null)
+    {
+        foreach(DataRow row in dw2.Table.Rows)
+        {
+            int RouteID = int.Parse(row["RouteID"].ToString());
+            string From = row["From"].ToString();
+            string To = row["To"].ToString();
+            int distance = int.Parse(row["Distance"].ToString());
+            Route route = new Route(RouteID, From, To, distance);
+            routes.Add(route);
+        }
+    }
+    if (dw3 != null)
+    {
+        foreach (DataRow row in dw3.Table.Rows)
+        {
+            dockIDS.Add(int.Parse(row["DockID"].ToString()));
+        }
+    }
+}
+<style>
+    .FormContainerStyle {
+        width: 360px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+    }
+</style>
+
+<div class="FormContainerStyle" style="color: white;">
+    <form asp-action="SaveSchedule" asp-controller="Schedule" method="post">
+        <div class="form-group">
+            <label for="ShipID">Laivo ID:</label>
+            <select class="form-control" id="ShipID" name="ShipID" required>
+                <option value="">Select Ship ID</option>
+                @foreach (int shipId in shipIDS)
+                {
+                    <option value="@shipId">@shipId</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="LeaveDate">Išvykimo Data:</label>
+            <input type="date" class="form-control" id="LeaveDate" name="LeaveDate" required>
+        </div>
+        <div class="form-group">
+            <label for="ArriveDate">Atvykimo Data:</label>
+            <input type="date" class="form-control" id="ArriveDate" name="ArriveDate" required>
+        </div>
+        <div class="form-group">
+            <label for="RouteID">Maršruto ID:</label>
+            <select class="form-control" id="RouteID" name="RouteID" required>
+                <option value="">Select Route ID</option>
+                @foreach (Route route in routes)
+                {
+                    <option value="@route.RouteID">@route.RouteID</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="DockID">Uosto ID:</label>
+            <select class="form-control" id="DockID" name="DockID" required>
+                <option value="">Select Dock ID</option>
+                @foreach (int dockID in dockIDS)
+                {
+                    <option value="@dockID">@dockID</option>
+                }
+            </select>
+        </div>
+        <br />
+        <button type="submit" class="btn btn-primary">Įrašyti</button>
+    </form>
+</div>

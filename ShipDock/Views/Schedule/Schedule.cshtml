@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Schedule>
+
+@{
+    ViewData["Title"] = "Laivų atvykimo grafikas";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+<h1 style="color: white;">
+    @ViewData["Title"].ToString()
+</h1>
+<h2 style="color: white;">Įvedimas</h2>
+<div>
+    @Html.Partial("ScheduleInsertForm", new Schedule())
+</div>
+<br />
+<h2 style="color: white;">Grafikas</h2>
+<table class="table table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th style="color: white;" scope="col">Laivo ID</th>
+            <th style="color: white;" scope="col">Laivo Modelis</th>
+            <th style="color: white;" scope="col">Išvykimo Data</th>
+            <th style="color: white;" scope="col">Atvykimo Data</th>
+            <th style="color: white;" scope="col">Maršrutas</th>
+            <th style="color: white;" scope="col">Išvykimo Statusas</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lot in Model)
+        {
+            <tr>
+                <td>
+                    @lot.ShipID
+                </td>
+                <td>
+                    @lot.ShipModel
+                </td>
+                <td>
+                    @lot.LeaveDate.ToString();
+                </td>
+                <td>
+                    @lot.ArriveDate.ToString();
+                </td>
+                <td>
+                    @lot.From - @lot.To
+                </td>
+                <td style="color: @(lot.DepartureStatus == "Departed" ? "green" : "red")">
+                    @lot.DepartureStatus
+                </td>
+                <td>
+                    <form asp-controller="Schedule" asp-action="UpdateDepartureStatus" method="post">
+                        <input type="hidden" name="id" value="@lot.TripID" />
+                        <button type="submit" class="btn btn-danger">Patvirtinti Išvykimą</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
