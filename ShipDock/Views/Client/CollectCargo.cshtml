@@ -4,8 +4,6 @@
     ViewData["Title"] = "Krovinio atsiėmimas";
 }
 
-<h1>@ViewData["Title"]</h1>
-
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success" role="alert">
@@ -33,11 +31,15 @@
             <th style="color: white;">Kodas</th>
             <th style="color: white;" scope="col">Data</th>
             <th style="color: white;" scope="col">Būsena</th>
+            @if (Model.Any(c => !string.IsNullOrEmpty(c.Gate) && c.State != "Collected"))
+            {
+                <th style="color: white;" scope="col">Atsiėmimo vieta</th>
+            }
             <th></th>
         </tr>
     </thead>
     @{
-    var orderedCargos = Model.OrderByDescending(c => c.State == "Collected").ThenByDescending(c => c.State == "Prepared");
+        var orderedCargos = Model.OrderByDescending(c => c.State == "Collected").ThenByDescending(c => c.State == "Prepared");
     }
     <tbody>
         @foreach (var cargo in orderedCargos)
@@ -47,8 +49,16 @@
                 <td>@cargo.Name</td>
                 <td>@cargo.Weight</td>
                 <td>@cargo.Code</td>
-                <td>@cargo.AcceptanceDate</td>
+                <td>@cargo.AcceptanceDate.ToShortDateString()</td>
                 <td>@cargo.State</td>
+                @if (!string.IsNullOrEmpty(cargo.Gate) && cargo.State != "Collected")
+                {
+                    <td>@cargo.Gate</td>
+                }
+                else if (Model.Any(c => !string.IsNullOrEmpty(c.Gate) && c.State != "Collected"))
+                {
+                    <td></td>
+                }
                 <td>
                     @if (cargo.State == "Delivered")
                     {
@@ -57,21 +67,19 @@
                             <button type="submit" class="btn btn-primary">Paruošti</button>
                         </form>
                     }
-                    @if (cargo.State == "Prepared")
+                    else if (cargo.State == "Prepared" && string.IsNullOrEmpty(cargo.Gate))
                     {
-                        <form asp-controller="Client" asp-action="CollectCargo" method="post">
+                        <form asp-controller="Client" asp-action="ShowGateInfo" method="post">
                             <input type="hidden" name="id" value="@cargo.ID" />
                             <button type="submit" class="btn btn-success">Atsiimti</button>
                         </form>
                     }
-                    @if (cargo.State == "Collected")
+                    else if (!string.IsNullOrEmpty(cargo.Gate) && cargo.State != "Collected")
                     {
-                        @if (TempData["GateInfo_" + cargo.ID] != null)
-                        {
-                            <div class="gate-info">
-                                @TempData["GateInfo_" + cargo.ID]
-                            </div>
-                        }
+                        <form asp-controller="Client" asp-action="ConfirmCollectedCargo" method="post">
+                            <input type="hidden" name="id" value="@cargo.ID" />
+                            <button type="submit" class="btn btn-success">Atsiimtas</button>
+                        </form>
                     }
                 </td>
             </tr>

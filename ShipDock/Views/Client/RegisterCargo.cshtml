@@ -22,8 +22,6 @@
     @ViewData["Title"].ToString()
 </h1>
 
-<h2 style="color: white;">Naujo krovinio registracija</h2>
-
 <div>
     <form asp-action="RegisterCargo" method="post">
         <div class="form-group">
@@ -40,7 +38,7 @@
         </div>
         <div class="button-container">
             <button type="submit" class="btn btn-primary">Registruoti</button>
-            <button type="button" onclick="window.history.back()" class="btn btn-secondary">Grįžti</button>
+            <a href="@Url.Action("ViewCargoState", "Client")" class="btn btn-info">Grįžti</a>
         </div>
     </form>
 </div>

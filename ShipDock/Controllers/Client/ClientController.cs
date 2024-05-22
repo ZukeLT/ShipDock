@@ -26,7 +26,8 @@ namespace ShipDock.Controllers.Client
                         TracktorID = int.Parse(row["TracktorID"].ToString()),
                         UserID = int.Parse(row["UserID"].ToString()),
                         LotPositionID = int.Parse(row["LotPositionID"].ToString()),
-                        State = row["State"]?.ToString() ?? "Delivered" // Default to "Delivered" if State is null
+                        State = row["State"]?.ToString() ?? "Delivered", // Default to "Delivered" if State is null
+                        Gate = row["Gate"]?.ToString()
                     };
 
                     cargoList.Add(cargo);
@@ -59,7 +60,6 @@ namespace ShipDock.Controllers.Client
             }
         }
 
-
         public IActionResult CancelRegistration()
         {
             var cargos = CargoList();
@@ -69,7 +69,7 @@ namespace ShipDock.Controllers.Client
         [HttpPost]
         public IActionResult CancelRegistration(int id)
         {
-            string sql = $"DELETE FROM Cargo WHERE CargoID = {id} AND State = {"New"}";
+            string sql = $"UPDATE Cargo SET State = 'Canceled' WHERE CargoID = {id} AND State = 'New'";
             bool isValid = DataSource.UpdateDataSQL(sql);
 
             if (isValid)
@@ -119,16 +119,18 @@ namespace ShipDock.Controllers.Client
         }
 
         [HttpPost]
-        public IActionResult CollectCargo(int id)
+        public IActionResult ShowGateInfo(int id)
         {
-            string gateInfo = "Gate A"; // Example gate information
+            // Generate random gate
+            string gateInfo = GenerateRandomGate();
 
-            string sql = $"UPDATE Cargo SET State = 'Collected' WHERE CargoID = {id}";
+            // Update Cargo table and set gateInfo in the Gate column
+            string sql = $"UPDATE Cargo SET Gate = '{gateInfo}' WHERE CargoID = {id}";
             bool isValid = DataSource.UpdateDataSQL(sql);
 
             if (isValid)
             {
-                TempData["SuccessMessage"] = "Cargo collected successfully.";
+                TempData["SuccessMessage"] = "Gate information displayed.";
                 TempData["GateInfo_" + id] = gateInfo; // Store gate info specific to cargo ID
             }
             else
@@ -136,6 +138,66 @@ namespace ShipDock.Controllers.Client
                 TempData["ErrorMessage"] = "Cargo not found.";
             }
             return RedirectToAction(nameof(CollectCargo));
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmCollectedCargo(int id)
+        {
+            string sql = $"UPDATE Cargo SET State = 'Collected' WHERE CargoID = {id}";
+            bool isValid = DataSource.UpdateDataSQL(sql);
+
+            if (isValid)
+            {
+                TempData["SuccessMessage"] = "Cargo state updated to 'Collected'.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Cargo not found.";
+            }
+            return RedirectToAction(nameof(CollectCargo));
+        }
+
+        // Method to generate random gate
+        private string GenerateRandomGate()
+        {
+            // Define gates A1 to F3
+            string[] gates = { "A", "B", "C", "D", "E", "F" };
+            Random rand = new Random();
+
+            // Generate random gate index (0 to 5 for letters A to F)
+            int letterIndex = rand.Next(0, 6);
+            // Generate random number (1 to 3)
+            int number = rand.Next(1, 4);
+
+            // Concatenate letter and number to form gate
+            return $"Gate {gates[letterIndex]}{number}";
+        }
+
+        [HttpPost]
+        public IActionResult DeleteCargo(int id)
+        {
+            // Check if cargo exists and its state is "Canceled"
+            var cargo = CargoList().FirstOrDefault(c => c.ID == id && c.State == "Canceled");
+            if (cargo != null)
+            {
+                // Delete cargo from database
+                bool deleted = DataSource.UpdateDataSQL($"DELETE FROM Cargo WHERE CargoID = {id}");
+                if (deleted)
+                {
+                    TempData["SuccessMessage"] = "Cargo deleted successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to delete cargo.";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Cargo not found or cannot be deleted.";
+            }
+
+            // Redirect back to the cargo list view
+            return RedirectToAction("ViewCargoState");
         }
     }
 }
