@@ -10,6 +10,7 @@ namespace ShipDock.Models
         public double Weight { get; set; }
         public double Volume { get; set; }
         public string? State { get; set; }
+        public int TracktorID { get; set; }
     }
 
 }
