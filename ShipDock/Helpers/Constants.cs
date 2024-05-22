@@ -10,7 +10,7 @@ namespace ShipDock.Helper
         /// User = Prisijungimo vardas
         /// Password = Naudotojo slaptažodis
         /// </summary>
-        public static string ConnectionString = "Server=(localdb)\\MSSQLLocalDB;Database=ShipDock;User=ShipDock;Password=ShipDock123;";
+        public static string ConnectionString = "Server=localhost\\SQLEXPRESS;Database=ShipDock;User=ShipDock;Password=ShipDock123;";
 
 
         /// <summary>
