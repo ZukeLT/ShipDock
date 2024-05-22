@@ -10804,19 +10804,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\vidma\\.nuget\\packages\\": {}
+    "C:\\Users\\i73ig\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Visual Studio Darbai\\ShipDock\\ShipDock\\ShipDock.csproj",
+      "projectUniqueName": "C:\\Users\\i73ig\\Desktop\\9Sq0sd22\\KTU\\3 kursas\\Analize\\ShipDock\\ShipDock\\ShipDock.csproj",
       "projectName": "ShipDock",
-      "projectPath": "D:\\Visual Studio Darbai\\ShipDock\\ShipDock\\ShipDock.csproj",
-      "packagesPath": "C:\\Users\\vidma\\.nuget\\packages\\",
-      "outputPath": "D:\\Visual Studio Darbai\\ShipDock\\ShipDock\\obj\\",
+      "projectPath": "C:\\Users\\i73ig\\Desktop\\9Sq0sd22\\KTU\\3 kursas\\Analize\\ShipDock\\ShipDock\\ShipDock.csproj",
+      "packagesPath": "C:\\Users\\i73ig\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\i73ig\\Desktop\\9Sq0sd22\\KTU\\3 kursas\\Analize\\ShipDock\\ShipDock\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\vidma\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\i73ig\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -10836,6 +10841,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -10866,6 +10876,24 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[6.0.28, 6.0.28]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[6.0.28, 6.0.28]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[6.0.28, 6.0.28]"
+          },
+          {
+            "name": "Microsoft.WindowsDesktop.App.Ref",
+            "version": "[6.0.28, 6.0.28]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -10874,7 +10902,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203\\RuntimeIdentifierGraph.json"
       }
     }
   }

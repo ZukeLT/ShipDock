@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Atsaukti registracija";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+<h1 style="color: white;">
+    @ViewData["Title"].ToString()
+</h1>
+<h2 style="color: white;">Atšaukti krovinio registraciją</h2>
+<table class="table table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th style="color: white;" scope="col">ID</th>
+            <th style="color: white;" scope="col">Pavadinimas</th>
+            <th style="color: white;" scope="col">Svoris</th>
+            <th style="color: white;" scope="col">Tūris</th>
+            <th style="color: white;" scope="col">Veiksmas</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cargo in Model)
+        {
+            <tr style="color: white;">
+                <td style="color: white;">
+                    @cargo.ID
+                </td>
+                <td>
+                    @cargo.Name
+                </td>
+                <td>
+                    @cargo.Weight
+                </td>
+                <td>
+                    @cargo.Volume
+                </td>
+                <td>
+                    <form asp-controller="Client" asp-action="CancelRegistration" method="post" style="display:inline;">
+                        <input type="hidden" name="id" value="@cargo.ID" />
+                        <button type="submit" class="btn btn-danger">Atšaukti registraciją</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button onclick="window.history.back()" class="btn btn-secondary">Grįžti</button>

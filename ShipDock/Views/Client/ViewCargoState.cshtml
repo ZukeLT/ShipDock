@@ -1,0 +1,64 @@
+@model IEnumerable<Cargo>
+
+@{
+    ViewData["Title"] = "Kroviniai";
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<h1 style="color: white;">
+    @ViewData["Title"].ToString()
+</h1>
+
+<h2 style="color: white;">Kroviniai</h2>
+
+<table class="table table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th style="color: white;" scope="col">ID</th>
+            <th style="color: white;" scope="col">Pavadinimas</th>
+            <th style="color: white;" scope="col">Svoris</th>
+            <th style="color: white;" scope="col">Tūris</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cargo in Model)
+        {
+            <tr style="color: white;">
+                <td style="color: white;">
+                    @cargo.ID
+                </td>
+                <td>
+                    @cargo.Name
+                </td>
+                <td>
+                    @cargo.Weight
+                </td>
+                <td>
+                    @cargo.Volume
+                </td>
+                <td>
+                    <a href="@Url.Action("PreviewCargo", "Client", new { id = cargo.ID })" class="btn btn-info">Peržiūrėti</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="button-container">
+    <a href="@Url.Action("RegisterCargo", "Client")" class="btn btn-primary">Registruoti krovinį</a>
+    <a href="@Url.Action("CancelRegistration", "Client")" class="btn btn-secondary">Atšaukti registraciją</a>
+</div>
