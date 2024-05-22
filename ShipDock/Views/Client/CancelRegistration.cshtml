@@ -1,3 +1,5 @@
+@model IEnumerable<Cargo>
+
 @{
     ViewData["Title"] = "Atsaukti registracija";
 }
@@ -23,8 +25,10 @@
             <th style="color: white;" scope="col">ID</th>
             <th style="color: white;" scope="col">Pavadinimas</th>
             <th style="color: white;" scope="col">Svoris</th>
-            <th style="color: white;" scope="col">Tūris</th>
-            <th style="color: white;" scope="col">Veiksmas</th>
+            <th style="color: white;" scope="col">Kodas</th>
+            <th style="color: white;" scope="col">Data</th>
+            <th style="color: white;" scope="col">Būsena</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -41,7 +45,13 @@
                     @cargo.Weight
                 </td>
                 <td>
-                    @cargo.Volume
+                    @cargo.Code
+                </td>
+                <td>
+                    @cargo.AcceptanceDate.ToShortDateString()
+                </td>
+                <td>
+                    @cargo.State
                 </td>
                 <td>
                     <form asp-controller="Client" asp-action="CancelRegistration" method="post" style="display:inline;">

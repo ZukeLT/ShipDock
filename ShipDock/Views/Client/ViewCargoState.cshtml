@@ -30,7 +30,8 @@
             <th style="color: white;" scope="col">ID</th>
             <th style="color: white;" scope="col">Pavadinimas</th>
             <th style="color: white;" scope="col">Svoris</th>
-            <th style="color: white;" scope="col">Tūris</th>
+            <th style="color: white;" scope="col">Kodas</th>
+            <th style="color: white;" scope="col">Data</th>
             <th></th>
         </tr>
     </thead>
@@ -48,7 +49,10 @@
                     @cargo.Weight
                 </td>
                 <td>
-                    @cargo.Volume
+                    @cargo.Code
+                </td>
+                <td>
+                    @cargo.AcceptanceDate.ToShortDateString()
                 </td>
                 <td>
                     <a href="@Url.Action("PreviewCargo", "Client", new { id = cargo.ID })" class="btn btn-info">Peržiūrėti</a>

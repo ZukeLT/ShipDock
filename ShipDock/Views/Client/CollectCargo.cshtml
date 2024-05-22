@@ -27,12 +27,13 @@
 <table class="table table-dark">
     <thead class="thead-dark">
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Pavadinimas</th>
-            <th scope="col">Svoris</th>
-            <th scope="col">Tūris</th>
-            <th scope="col">Būsena</th>
-            <th scope="col"></th>
+            <th style="color: white;">ID</th>
+            <th style="color: white;">Pavadinimas</th>
+            <th style="color: white;">Svoris</th>
+            <th style="color: white;">Kodas</th>
+            <th style="color: white;" scope="col">Data</th>
+            <th style="color: white;" scope="col">Būsena</th>
+            <th></th>
         </tr>
     </thead>
     @{
@@ -45,7 +46,8 @@
                 <td>@cargo.ID</td>
                 <td>@cargo.Name</td>
                 <td>@cargo.Weight</td>
-                <td>@cargo.Volume</td>
+                <td>@cargo.Code</td>
+                <td>@cargo.AcceptanceDate</td>
                 <td>@cargo.State</td>
                 <td>
                     @if (cargo.State == "Delivered")
@@ -76,3 +78,4 @@
         }
     </tbody>
 </table>
+<button onclick="window.history.back()" class="btn btn-secondary">Grįžti</button>

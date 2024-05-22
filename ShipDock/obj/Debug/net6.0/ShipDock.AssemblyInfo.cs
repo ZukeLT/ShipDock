@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ShipDock")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6c0ad5b3712fdd01b0b432544dbbe0d0c3677202")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a778701e8af6f7d163dbaf39f242f9ad013f9a97")]
 [assembly: System.Reflection.AssemblyProductAttribute("ShipDock")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ShipDock")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

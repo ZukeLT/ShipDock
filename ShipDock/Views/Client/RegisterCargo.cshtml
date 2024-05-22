@@ -1,22 +1,29 @@
+@model Cargo
+ 
 @{
-    ViewData["Title"] = "Registruoti krovini";
+    ViewData["Title"] = "Registruoti krovinį";
 }
+
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success" role="alert">
         @TempData["SuccessMessage"]
     </div>
 }
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger" role="alert">
         @TempData["ErrorMessage"]
     </div>
 }
+
 <h1 style="color: white;">
     @ViewData["Title"].ToString()
 </h1>
+
 <h2 style="color: white;">Naujo krovinio registracija</h2>
+
 <div>
     <form asp-action="RegisterCargo" method="post">
         <div class="form-group">
@@ -28,12 +35,12 @@
             <input type="number" class="form-control" id="Weight" name="Weight" step="0.01" required />
         </div>
         <div class="form-group">
-            <label for="Volume" style="color: white;">Tūris</label>
-            <input type="number" class="form-control" id="Volume" name="Volume" step="0.01" required />
+            <label for="AcceptanceDate" style="color: white;">Priėmimo data</label>
+            <input type="date" class="form-control" id="AcceptanceDate" name="AcceptanceDate" required />
         </div>
         <div class="button-container">
             <button type="submit" class="btn btn-primary">Registruoti</button>
-            <button onclick="window.history.back()" class="btn btn-secondary">Grįžti</button>
+            <button type="button" onclick="window.history.back()" class="btn btn-secondary">Grįžti</button>
         </div>
     </form>
 </div>
