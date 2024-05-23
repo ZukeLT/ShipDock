@@ -1,0 +1,314 @@
+﻿@using System.Data;
+@using Newtonsoft.Json;
+@using ShipDock.Helper;
+@using static ShipDock.Helpers.Enums;
+@{
+    ViewData["Title"] = "Krovinio operavimas";
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"]
+    </div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+<h1 style="color: white;">
+    @ViewData["Title"].ToString()
+</h1>
+<br />
+
+<div>
+    <h2 style="color: white;">
+        Kokio vartotojo vardu daromi pakeiitmai
+    </h2>
+    <div>
+        @{
+            DataView workers = (DataView)DataSource.ExecuteSelectSQL("SELECT * FROM [User]");
+            List<User> usersLOAD = new List<User>();
+            List<User> usersUNLOAD = new List<User>();
+            if (workers != null)
+            {
+                usersLOAD.Clear();
+                usersUNLOAD.Clear();
+                foreach (DataRow row in workers.Table.Rows)
+                {
+                    User user = new User()
+                    {
+                        Username = row.Field<string>("Username"),
+                        ID = row.Field<int>("UserID"),
+                        Password = row.Field<string>("Password"),
+                        UserRole = row.Field<string>("UserRole")
+
+                    };
+
+                    if (user.UserRole == "Iškrovimo Darbuotojas")
+                        usersUNLOAD.Add(user);
+                    if (user.UserRole == "Pakrovimo Darbuotojas")
+                        usersLOAD.Add(user);
+                    
+                }
+            }
+
+            //HARDCODED USERs
+            User loadingUser = usersLOAD.FirstOrDefault();
+            User unloadingUser = usersUNLOAD.FirstOrDefault();
+        }
+        <select class="form-control" id="roleSelect" name="roleSelect" onchange="Testast()">
+            <option value="Iškrovimo Darbuotojas">Iškrovimo Darbuotojas</option>
+            <option value="Pakrovimo Darbuotojas">Pakrovimo Darbuotojas</option>
+        </select>
+        <h3 style="color: white;">
+            Darbuotojas
+        </h3>
+        <div id="Loading">
+            <select class="form-control">
+                @foreach (User us in usersLOAD)
+                {
+                    <option value='@us.ID'>@us.Username</option>
+                }
+            </select>
+        </div>
+        <div id="Unloading">
+            <select class="form-control">
+                @foreach (User us in usersUNLOAD)
+                {
+                    <option value='@us.ID'>@us.Username</option>
+                }
+            </select>
+        </div>
+       
+    </div>
+</div>
+<div id="LoadingDIV">
+    @{
+        DataView dw = (DataView)DataSource.ExecuteSelectSQL($"SELECT * FROM Tracktor WHERE [Status] = '{TracktorStates.Waiting}' AND CraneID = (SELECT TOP(1) CraneID FROM Crane WHERE UserID = {loadingUser.ID})");
+        List<Tracktor> tracktors = new List<Tracktor>();
+        if (dw != null)
+        {
+            tracktors.Clear();
+            foreach (DataRow row in dw.Table.Rows)
+            {
+                Tracktor tracktor = new Tracktor()
+                    {
+                        TracktorID = (int)row["TracktorID"],
+                        Model = row["Model"].ToString(),
+                        Status = row["Status"].ToString(),
+                        CraneID = (string.IsNullOrEmpty(row["CraneID"].ToString()) ? null : (int)row["CraneID"]),
+                        CargoID = (string.IsNullOrEmpty(row["CargoID"].ToString()) ? null : (int)row["CargoID"])
+                    };
+                tracktors.Add(tracktor);
+            }
+        }
+
+        DataView dw2 = (DataView)DataSource.ExecuteSelectSQL($"SELECT * FROM Cargo WHERE [State] = '{CargoStates.Proccesing}'");
+        List<Cargo> cargos = new List<Cargo>();
+        if (dw2 != null)
+        {
+            cargos.Clear();
+            foreach (DataRow row in dw2.Table.Rows)
+            {
+                var cargo = new Cargo
+                    {
+                        ID = row.Field<int>("CargoID"),
+                        Name = row.Field<string>("Title"),
+                        Code = row.Field<string>("Code"),
+                        Weight = Convert.ToDouble(row.Field<object>("Weight")),
+                        AcceptanceDate = row.Field<DateTime>("AcceptanceDate"),
+                        TracktorID = row.Field<int>("TracktorID"),
+                        UserID = row.Field<int>("UserID"),
+                        LotPositionID = row.Field<int>("LotPositionID"),
+                        State = row.Field<string>("State"),
+                        Gate = row.Field<string>("Gate")
+                    };
+                cargos.Add(cargo);
+            }
+        }
+
+    }
+    <h2 style="color: white;">Atvykę Traktoriai (Iškrovimo iš laivo krano operatoriui)</h2>
+    <table class="table table-dark">
+        <thead class="thead-dark">
+            <tr>
+                <th style="color: white;" scope="col">ID</th>
+                <th style="color: white;" scope="col">Modelis</th>
+                <th style="color: white;" scope="col">Statusas</th>
+                <th style="color: white;" scope="col">Krano ID</th>
+                <th style="color: white;" scope="col">Krovinio ID</th>
+                <th style="color: white;" scope="col">Krovinys</th>
+                <th style="color: white;" scope="col">Veiksmas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tracktor in tracktors)
+            {
+                <tr>
+                    <td>
+                        @tracktor.TracktorID
+                    </td>
+                    <td>
+                        @tracktor.Model
+                    </td>
+                    <td>
+                        @tracktor.Status
+                    </td>
+                    <td>
+                        @tracktor.CraneID
+                    </td>
+                    <td>
+                        @tracktor.CargoID
+                    </td>
+                    <form asp-controller="LotJob" asp-action="LoadedCargo" method="post">
+                        <td>
+                        <select class="form-control" id="cargoJSON" name="cargoJSON" required>
+                                @foreach (var cargo in cargos)
+                                {
+                                <option value='@Html.Raw(JsonConvert.SerializeObject(cargo))'>@cargo.Name</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <input type="hidden" name="userJSON" value='@Html.Raw(JsonConvert.SerializeObject(loadingUser))' />
+                            <input type="hidden" name="tracktorJSON" value='@Html.Raw(JsonConvert.SerializeObject(tracktor))' />
+                            <button type="submit" class="btn btn-primary">Priskirti</button>
+                        </td>
+                    </form>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div id="UnloadingDIV">
+    @{
+        DataView dw3 = (DataView)DataSource.ExecuteSelectSQL($"SELECT * FROM Tracktor WHERE [Status] = '{TracktorStates.Waiting}' AND CargoID IS NOT NULL AND CraneID = (SELECT TOP(1) CraneID FROM Crane WHERE UserID = {unloadingUser.ID})");
+        List<Tracktor> tracktors2 = new List<Tracktor>();
+        if (dw3 != null)
+        {
+            tracktors2.Clear();
+            foreach (DataRow row in dw3.Table.Rows)
+            {
+                Tracktor tracktor = new Tracktor()
+                    {
+                        TracktorID = (int)row["TracktorID"],
+                        Model = row["Model"].ToString(),
+                        Status = row["Status"].ToString(),
+                        CraneID = (string.IsNullOrEmpty(row["CraneID"].ToString()) ? null : (int)row["CraneID"]),
+                        CargoID = (string.IsNullOrEmpty(row["CargoID"].ToString()) ? null : (int)row["CargoID"])
+                    };
+                tracktors2.Add(tracktor);
+            }
+        }
+    }
+    <h2 style="color: white;">Atvykę Traktoriai (Išsikrovimo nuo traktoriaus krano operatoriui)</h2>
+    <table class="table table-dark">
+        <thead class="thead-dark">
+            <tr>
+                <th style="color: white;" scope="col">ID</th>
+                <th style="color: white;" scope="col">Modelis</th>
+                <th style="color: white;" scope="col">Statusas</th>
+                <th style="color: white;" scope="col">Krano ID</th>
+                <th style="color: white;" scope="col">Krovinio ID</th>
+                <th style="color: white;" scope="col">Krovinys</th>
+                <th style="color: white;" scope="col">Veiksmas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tracktor in tracktors2)
+            {
+                <tr>
+                    <td>
+                        @tracktor.TracktorID
+                    </td>
+                    <td>
+                        @tracktor.Model
+                    </td>
+                    <td>
+                        @tracktor.Status
+                    </td>
+                    <td>
+                        @tracktor.CraneID
+                    </td>
+                    <td>
+                        @tracktor.CargoID
+                    </td>
+                    <form asp-controller="LotJob" asp-action="UnloadedCargo" method="post">
+                    <td>
+                        @{
+                                DataView dw4 = (DataView)DataSource.ExecuteSelectSQL(
+                                $"SELECT Cargo.* FROM Tracktor RIGHT JOIN Cargo ON Cargo.CargoID = Tracktor.CargoID " +
+                                $"WHERE Tracktor.TracktorID = {@tracktor.TracktorID}"
+                                );
+                                Cargo waitingCargo = null;
+                                if (dw4 != null && dw4.Table.Rows.Count > 0)
+                                {
+                                    DataRow row = dw4.Table.Rows[0];
+                                    waitingCargo = new Cargo
+                                    {
+                                        ID = row.Field<int>("CargoID"),
+                                        Name = row.Field<string>("Title"),
+                                        Code = row.Field<string>("Code"),
+                                        Weight = Convert.ToDouble(row.Field<object>("Weight")),
+                                        AcceptanceDate = row.Field<DateTime>("AcceptanceDate"),
+                                        TracktorID = row.Field<int>("TracktorID"),
+                                        UserID = row.Field<int>("UserID"),
+                                        LotPositionID = row.Field<int>("LotPositionID"),
+                                        State = row.Field<string>("State"),
+                                        Gate = row.Field<string>("Gate")
+                                    };
+                                }
+                        }
+                        @(waitingCargo != null ? waitingCargo.Name:"-")
+                        <input type="hidden" name="cargoJSON" value='@Html.Raw(JsonConvert.SerializeObject(waitingCargo))' />
+                    </td>
+                    <td>
+                        <input type="hidden" name="userJSON" value='@Html.Raw(JsonConvert.SerializeObject(unloadingUser))' />
+                        <input type="hidden" name="tracktorJSON" value='@Html.Raw(JsonConvert.SerializeObject(tracktor))' />
+                        <button type="submit" class="btn btn-primary">Iškrautas</button>
+                    </td>
+                    </form>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        let loading = document.getElementById('Loading');
+        let unloading = document.getElementById('Unloading');
+        let loadingDIV = document.getElementById('LoadingDIV');
+        let unloadingDIV = document.getElementById('UnloadingDIV');
+
+        window.onload = function()
+        {
+            loading.style.display = 'none';
+            unloading.style.display = 'none';
+            // loadingDIV.style.display = 'none';
+            // unloadingDIV.style.display = 'none';
+            //Testast();
+        }
+
+//         function OnWorkerChange()
+//         {
+//             let val = document.getElementById('roleSelect').value;
+            
+//             if (val == 'Iškrovimo Darbuotojas'){
+//                 loading.style.display = 'none';
+//                 unloading.style.display = '';
+//                 loadingDIV.style.display = 'none';
+//                 unloadingDIV.style.display = '';
+//             }
+//             else if (val == 'Pakrovimo Darbuotojas') {
+//                 loading.style.display = '';
+//                 unloading.style.display = 'none';
+//                 loadingDIV.style.display = '';
+//                 unloadingDIV.style.display = 'none';
+//             }
+//         }
+//     </script>
+}

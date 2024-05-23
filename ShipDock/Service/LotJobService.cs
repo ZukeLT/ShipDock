@@ -1,12 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShipDock.Helper;
+using ShipDock.Models;
 using System.Data;
 
 namespace ShipDock.Service
 {
     public class LotJobService
     {
-        public void ExecuteTracktorJob()
+        public void CheckTracktorStatuses()
         {
             var tracktors = DataSource.ExecuteSelectSQL("SELECT * FROM Tracktor WHERE Status = 'Waiting'");
 
@@ -28,6 +29,12 @@ namespace ShipDock.Service
                     // Handle no available cranes
                 }
             }
+        }
+        public void RecalculateShipCargoPositions()
+        {
+        }
+        public void ConfirmCargoLoading(Cargo cargo)
+        {
         }
     }
 }

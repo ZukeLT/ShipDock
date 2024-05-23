@@ -2,18 +2,17 @@
 using ShipDock.Helper;
 using ShipDock.Models;
 using ShipDock.Service;
+using System.Data;
+using System.Text.Json.Serialization;
+using System.Text.Json;
+using ShipDock.Models.agreg;
+using ShipDock.Helpers;
 
 [ApiController]
 [Route("api/[controller]")]
 public class TracktorController : ControllerBase
 {
-    [HttpGet]
-    public IActionResult GetAllTracktors()
-    {
-        var data = DataSource.ExecuteSelectSQL("SELECT * FROM Tracktor");
-        return Ok(data);
-    }
-
+    #region justTestin
     [HttpGet("{id}")]
     public IActionResult GetTracktorById(int id)
     {
@@ -29,83 +28,106 @@ public class TracktorController : ControllerBase
         return isSuccess ? Ok() : StatusCode(500);
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("UpdateTracktorStatus/{id}")]
     public IActionResult UpdateTracktorStatus(int id, [FromBody] Tracktor tracktor)
     {
-        var query = $"UPDATE Tracktor SET Status = {tracktor.Status} WHERE TracktorID = {id}";
+        var query = $"UPDATE Tracktor SET [Status] = '{tracktor.Status}' WHERE TracktorID = {id}";
         var isSuccess = DataSource.UpdateDataSQL(query);
         return isSuccess ? Ok() : StatusCode(500);
     }
-}
 
-[ApiController]
-[Route("api/[controller]")]
-public class LotPositionController : ControllerBase
-{
-    [HttpGet]
-    public IActionResult GetAllLotPositions()
+    private List<Dictionary<string, object>> ConvertDataViewToList(DataView dataView)
     {
-        var data = DataSource.ExecuteSelectSQL("SELECT * FROM LotPosition");
-        return Ok(data);
+        var list = new List<Dictionary<string, object>>();
+
+        foreach (DataRowView rowView in dataView)
+        {
+            var row = rowView.Row;
+            var dict = row.Table.Columns.Cast<DataColumn>()
+                            .ToDictionary(col => col.ColumnName, col => row[col]);
+            list.Add(dict);
+        }
+
+        return list;
     }
-}
-
-[ApiController]
-[Route("api/[controller]")]
-public class CraneController : ControllerBase
-{
     [HttpGet]
-    public IActionResult GetAllCranes()
+    public IActionResult GetAllTracktors()
     {
-        var data = DataSource.ExecuteSelectSQL("SELECT * FROM Crane");
-        return Ok(data);
+        var data = DataSource.ExecuteSelectSQL("SELECT * FROM Tracktor");
+        return Ok(ConvertDataViewToList(data));
     }
-}
+    #endregion
 
-[ApiController]
-[Route("api/[controller]")]
-public class CargoLoadController : ControllerBase
-{
-    [HttpGet]
-    public IActionResult GetAllCargoLoads()
-    {
-        var data = DataSource.ExecuteSelectSQL("SELECT * FROM CargoLoad");
-        return Ok(data);
-    }
 
-    [HttpPut("{id}")]
-    public IActionResult UpdateCargoLoadStatus(int id, [FromBody] Cargo cargo)
+    [HttpPut("SendUnesignedDockCraneCoordinates/{id}")]
+    public IActionResult SendUnesignedDockCraneCoordinates(int id, [FromBody] Crane crane)
     {
-        var query = $"UPDATE CargoLoad SET Status = {cargo.State} WHERE CargoLoadID = {id}";
+        var query = 
+            $"UPDATE Tracktor SET [CraneID] = {crane.CraneID}, " +
+            $"[CargoID] = NULL, " +
+            $"[Status] = '{Enums.TracktorStates.Loading}' " + 
+            $"WHERE TracktorID = {id}";
         var isSuccess = DataSource.UpdateDataSQL(query);
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(10000); //10 sec duodam kol atvara
+
+            var updateQuery =
+                $"UPDATE Tracktor " +
+                $"SET [Status] = '{Enums.TracktorStates.Waiting}' " +
+                $"WHERE TracktorID = {id}";
+            DataSource.UpdateDataSQL(updateQuery);
+        });
+
         return isSuccess ? Ok() : StatusCode(500);
     }
-}
-
-[Route("api/[controller]")]
-[ApiController]
-public class CargoController : ControllerBase
-{
-    private readonly ICargoService _cargoService;
-
-    public CargoController(ICargoService cargoService)
+    [HttpPut("SendCoordinatesWithLoad/{id}")]
+    public IActionResult SendCoordinatesWithLoad(int id, [FromBody] CargoCrane cargoCrane)
     {
-        _cargoService = cargoService;
+        var query =
+            $"UPDATE Tracktor " +
+            $"SET [CraneID] = {cargoCrane.crane.CraneID}, " +
+            $"[CargoID] = {cargoCrane.cargo.ID}, " +
+            $"[Status] = '{Enums.TracktorStates.Unloading}' " +
+            $"WHERE TracktorID = {id}";
+        var isSuccess = DataSource.UpdateDataSQL(query);
+
+        Task.Run(async () =>
+        {
+            await Task.Delay(10000); //10 sec duodam kol atvara
+
+            var updateQuery =
+                $"UPDATE Tracktor " +
+                $"SET [Status] = '{Enums.TracktorStates.Waiting}' " +
+                $"WHERE TracktorID = {id}";
+            DataSource.UpdateDataSQL(updateQuery);
+        });
+
+        return isSuccess ? Ok() : StatusCode(500);
     }
-
-    [HttpPost]
-    public IActionResult CreateCargo([FromBody] Cargo cargo)
+   
+    [HttpPut("GoHome/{id}")]
+    public IActionResult GoHome(int id)
     {
-        var result = _cargoService.AddCargo(cargo);
-        if (result) return Ok();
-        return BadRequest();
-    }
+        var query =
+        $"UPDATE Tracktor SET [CraneID] = NULL, " +
+        $"[CargoID] = NULL, " +
+        $"[Status] = '{Enums.TracktorStates.Returning}' , " +
+        $"WHERE TracktorID = {id}";
+        var isSuccess = DataSource.UpdateDataSQL(query);
 
-    [HttpPut("{id}")]
-    public IActionResult UpdateCargoStatus(int id, [FromBody] string status)
-    {
-        var result = _cargoService.UpdateCargoStatus(id, status);
-        if (result) return Ok();
-        return NotFound();
+        Task.Run(async () =>
+        {
+            await Task.Delay(10000); //10 sec duodam kol grista ir naujinam i nauja statusa
+
+            var updateQuery =
+                $"UPDATE Tracktor " +
+                $"SET [Status] = '{Enums.TracktorStates.Waiting}' " +
+                $"WHERE TracktorID = {id}";
+            DataSource.UpdateDataSQL(updateQuery);
+        });
+
+        return isSuccess ? Ok() : StatusCode(500);
     }
 }

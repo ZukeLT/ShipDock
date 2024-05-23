@@ -9,14 +9,14 @@ namespace ShipDock.Controllers.Control
 	{
 		public IActionResult Schedule()
 		{
-			List<Schedule> scheduleList = new List<Schedule>();
+			List<ShipDock.Models.Schedule> scheduleList = new List<ShipDock.Models.Schedule>();
 			DataView dw = (DataView)DataSource.ExecuteSelectSQL("SELECT t.TripID, t.ArriveDate, t.LeaveDate, t.DepartureStatus, s.ShipID, s.Model, r.[From], r.[To] FROM Trip t JOIN Ship s ON t.ShipID = s.ShipID JOIN [Route] r ON t.RouteID = r.RouteID;");
 
 			if(dw != null)
 			{
 				foreach(DataRow row in dw.Table.Rows)
 				{
-					Schedule schedule = new Schedule();
+                    ShipDock.Models.Schedule schedule = new ShipDock.Models.Schedule();
 					schedule.TripID = int.Parse(row["TripID"].ToString());
 					schedule.LeaveDate = DateTime.Parse(row["LeaveDate"].ToString());
 					schedule.ArriveDate = DateTime.Parse(row["ArriveDate"].ToString());
@@ -31,7 +31,7 @@ namespace ShipDock.Controllers.Control
             return View(scheduleList);
         }
 
-		public IActionResult SaveSchedule(Schedule schedule)
+		public IActionResult SaveSchedule(ShipDock.Models.Schedule schedule)
 		{
 			if (schedule.Insert())
 				TempData["SuccessMessage"] = "Schedule Successfully inserted";
