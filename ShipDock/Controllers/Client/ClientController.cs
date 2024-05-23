@@ -6,39 +6,39 @@ using System.Diagnostics;
 
 namespace ShipDock.Controllers.Client
 {
-    // public class ClientController : Controller
-    // {
-    //     //Action to show the list of cargos
-    //     public IActionResult ViewCargoState()
-    //     {
-    //         //var cargos = _dbContext.Cargos.ToList(); // Fetch cargos from the database
-    //         return View();
-    //     }
-
-    //     // Action to register a new cargo
-    //     public IActionResult RegisterCargo()
-    //     {
-    //         return View();
-    //     }
-
-    //     // Action to cancel cargo registration
-    //     public IActionResult CancelRegistration()
-    //     {
-    //         return View();
-    //     }
-    // }
-
     public class ClientController : Controller
     {
-        private static List<Cargo> cargos = new List<Cargo>
+        public List<Cargo> CargoList()
         {
-            new Cargo { ID = 1, Name = "Cargo 1", Weight = 100.5, Volume = 50.3, State = "Delivered" },
-            new Cargo { ID = 2, Name = "Cargo 2", Weight = 200.0, Volume = 75.0, State = "Delivered" },
-            new Cargo { ID = 3, Name = "Cargo 3", Weight = 150.2, Volume = 60.4, State = "Prepared" }
-        };
+            List<Cargo> cargoList = new List<Cargo>();
+            DataView dw = (DataView)DataSource.ExecuteSelectSQL("SELECT * FROM Cargo");
+            if (dw != null)
+            {
+                foreach (DataRow row in dw.Table.Rows)
+                {
+                    Cargo cargo = new Cargo
+                    {
+                        ID = int.Parse(row["CargoID"].ToString()),
+                        Name = row["Title"].ToString(),
+                        Code = row["Code"].ToString(),
+                        Weight = int.Parse(row["Weight"].ToString()),
+                        AcceptanceDate = DateTime.Parse(row["AcceptanceDate"].ToString()),
+                        TracktorID = int.Parse(row["TracktorID"].ToString()),
+                        UserID = int.Parse(row["UserID"].ToString()),
+                        LotPositionID = int.Parse(row["LotPositionID"].ToString()),
+                        State = row["State"]?.ToString() ?? "Delivered", // Default to "Delivered" if State is null
+                        Gate = row["Gate"]?.ToString()
+                    };
+
+                    cargoList.Add(cargo);
+                }
+            }
+            return cargoList;
+        }
 
         public IActionResult ViewCargoState()
         {
+            var cargos = CargoList();
             return View(cargos);
         }
 
@@ -50,95 +50,154 @@ namespace ShipDock.Controllers.Client
         [HttpPost]
         public IActionResult RegisterCargo(Cargo cargo)
         {
-            if (ModelState.IsValid)
-            {
-                cargo.ID = cargos.Any() ? cargos.Max(c => c.ID) + 1 : 1;
-                cargo.State = "Delivered"; // Set the state to "Delivered"
-                cargos.Add(cargo);
+            if (cargo.Insert()) {
                 TempData["SuccessMessage"] = "Cargo registered successfully.";
-                return RedirectToAction("ViewCargoState");
+                return RedirectToAction(nameof(ViewCargoState));
             }
-            TempData["ErrorMessage"] = "Failed to register cargo.";
-            return View(cargo);
+            else {
+                TempData["ErrorMessage"] = "Failed to register cargo.";
+                return View(cargo);
+            }
         }
 
         public IActionResult CancelRegistration()
         {
+            var cargos = CargoList();
             return View(cargos);
         }
 
         [HttpPost]
         public IActionResult CancelRegistration(int id)
         {
-            var cargo = cargos.FirstOrDefault(c => c.ID == id);
-            if (cargo != null)
+            string sql = $"UPDATE Cargo SET State = 'Canceled' WHERE CargoID = {id} AND State = 'New'";
+            bool isValid = DataSource.UpdateDataSQL(sql);
+
+            if (isValid)
             {
-                cargos.Remove(cargo);
                 TempData["SuccessMessage"] = "Cargo registration canceled successfully.";
             }
             else
             {
-                TempData["ErrorMessage"] = "Cargo not found.";
+                TempData["ErrorMessage"] = "Cargo can no longer be canceled.";
+                return RedirectToAction(nameof(CancelRegistration));
             }
-            return RedirectToAction("ViewCargoState");
+            return RedirectToAction(nameof(ViewCargoState));
         }
 
         public IActionResult PreviewCargo(int id)
         {
-            var cargo = cargos.FirstOrDefault(c => c.ID == id);
+            var cargo = CargoList().FirstOrDefault(c => c.ID == id);
             if (cargo == null)
             {
                 TempData["ErrorMessage"] = "Cargo not found.";
-                return RedirectToAction("ViewCargoState");
+                return RedirectToAction(nameof(ViewCargoState));
             }
             return View(cargo);
         }
 
         public IActionResult CollectCargo()
         {
-            // Get cargos with state "Delivered"
-            var deliveredCargos = cargos.Where(c => c.State == "Delivered" || c.State == "Prepared" || c.State == "Collected").ToList();
+            var deliveredCargos = CargoList().Where(c => c.State == "Delivered" || c.State == "Prepared" || c.State == "Collected").ToList();
             return View(deliveredCargos);
         }
 
         [HttpPost]
         public IActionResult PrepareCargo(int id)
         {
-            var cargo = cargos.FirstOrDefault(c => c.ID == id);
-            if (cargo != null)
+            string sql = $"UPDATE Cargo SET State = 'Prepared' WHERE CargoID = {id}";
+            bool isValid = DataSource.UpdateDataSQL(sql);
+
+            if (isValid)
             {
-                cargo.State = "Prepared";
                 TempData["SuccessMessage"] = "Cargo prepared successfully.";
             }
             else
             {
                 TempData["ErrorMessage"] = "Cargo not found.";
             }
-            return RedirectToAction("CollectCargo");
+            return RedirectToAction(nameof(CollectCargo));
         }
 
         [HttpPost]
-        public IActionResult CollectCargo(int id)
+        public IActionResult ShowGateInfo(int id)
         {
-            var cargo = cargos.FirstOrDefault(c => c.ID == id);
-            if (cargo != null)
-            {
-                // Assuming you have logic here to determine the gate information
-                string gateInfo = "Gate A"; // Example gate information
+            // Generate random gate
+            string gateInfo = GenerateRandomGate();
 
-                // Update cargo state to collected or any other desired state
-                cargo.State = "Collected";
-                TempData["SuccessMessage"] = "Cargo collected successfully.";
-                TempData["GateInfo_" + cargo.ID] = gateInfo; // Store gate info specific to cargo ID
+            // Update Cargo table and set gateInfo in the Gate column
+            string sql = $"UPDATE Cargo SET Gate = '{gateInfo}' WHERE CargoID = {id}";
+            bool isValid = DataSource.UpdateDataSQL(sql);
+
+            if (isValid)
+            {
+                TempData["SuccessMessage"] = "Gate information displayed.";
+                TempData["GateInfo_" + id] = gateInfo; // Store gate info specific to cargo ID
             }
             else
             {
                 TempData["ErrorMessage"] = "Cargo not found.";
             }
-            return RedirectToAction("CollectCargo");
+            return RedirectToAction(nameof(CollectCargo));
         }
 
+        [HttpPost]
+        public IActionResult ConfirmCollectedCargo(int id)
+        {
+            string sql = $"UPDATE Cargo SET State = 'Collected' WHERE CargoID = {id}";
+            bool isValid = DataSource.UpdateDataSQL(sql);
 
+            if (isValid)
+            {
+                TempData["SuccessMessage"] = "Cargo state updated to 'Collected'.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Cargo not found.";
+            }
+            return RedirectToAction(nameof(CollectCargo));
+        }
+
+        // Method to generate random gate
+        private string GenerateRandomGate()
+        {
+            // Define gates A1 to F3
+            string[] gates = { "A", "B", "C", "D", "E", "F" };
+            Random rand = new Random();
+
+            // Generate random gate index (0 to 5 for letters A to F)
+            int letterIndex = rand.Next(0, 6);
+            // Generate random number (1 to 3)
+            int number = rand.Next(1, 4);
+
+            // Concatenate letter and number to form gate
+            return $"Gate {gates[letterIndex]}{number}";
+        }
+
+        [HttpPost]
+        public IActionResult DeleteCargo(int id)
+        {
+            // Check if cargo exists and its state is "Canceled"
+            var cargo = CargoList().FirstOrDefault(c => c.ID == id && c.State == "Canceled");
+            if (cargo != null)
+            {
+                // Delete cargo from database
+                bool deleted = DataSource.UpdateDataSQL($"DELETE FROM Cargo WHERE CargoID = {id}");
+                if (deleted)
+                {
+                    TempData["SuccessMessage"] = "Cargo deleted successfully.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to delete cargo.";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Cargo not found or cannot be deleted.";
+            }
+
+            // Redirect back to the cargo list view
+            return RedirectToAction("ViewCargoState");
+        }
     }
-
 }

@@ -149,5 +149,33 @@ namespace ShipDock.Helper
                 return false;
             }
         }
+
+        public static int InsertSQL(string CommandText)
+        {
+            string connectionString = Constants.ConnectionString;
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand command = new SqlCommand(CommandText, connection))
+                    {
+                        connection.Open();
+
+                        command.CommandText += "; SELECT SCOPE_IDENTITY();";
+
+                        int identity = Convert.ToInt32(command.ExecuteScalar());
+                        return identity;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return -1;
+            }
+            finally
+            {
+
+            }
+        }
     }
 }
