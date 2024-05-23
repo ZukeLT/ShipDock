@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Schedule>
 
 @{
-    ViewData["Title"] = "Laivų atvykimo grafikas";
+    ViewData["Title"] = "Reisų tvarkaraštis";
 }
 @if (TempData["SuccessMessage"] != null)
 {
@@ -61,7 +61,7 @@
                 <td>
                     <form asp-controller="Schedule" asp-action="UpdateDepartureStatus" method="post">
                         <input type="hidden" name="id" value="@lot.TripID" />
-                        <button type="submit" class="btn btn-danger">Patvirtinti Išvykimą</button>
+                        <button type="submit" class="btn btn-primary">Patvirtinti Išvykimą</button>
                     </form>
                 </td>
             </tr>
