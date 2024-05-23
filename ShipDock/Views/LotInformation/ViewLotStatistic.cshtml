@@ -1,0 +1,158 @@
+﻿@model LotStatistic
+@using System.Data
+@using ShipDock.Helper
+@{
+    ViewData["Title"] = $"Aikštelės {Model.lot.Code} statistika";
+    int zDim = Model.lot.Z_Dim;  // Number of layers
+    int TotalWeight = 0;
+    foreach(LotPosition position in Model.LotPositions)
+    {
+        TotalWeight += position.CargoWeight;
+    }
+
+    List<Cargo> allCargos = new List<Cargo>();
+
+    foreach(LotPosition position in Model.LotPositions)
+    {
+        DataView dw = (DataView)DataSource.ExecuteSelectSQL($"SELECT * FROM Cargo WHERE Cargo.CargoID = {position.CargoID}");
+
+        if(dw != null)
+        {   
+            Cargo cargo = new Cargo();
+            foreach(DataRow row in dw.Table.Rows)
+            {
+                cargo.ID = int.Parse(row["CargoID"].ToString());
+                cargo.Name = row["Title"].ToString();
+                cargo.Weight = double.Parse(row["Weight"].ToString());
+            }
+            allCargos.Add(cargo);
+        }
+        
+    }
+}
+
+<h1 style="color: white;">@ViewData["Title"]</h1>
+
+<div class="container" style="margin-bottom: 20px; border: 1px solid white; padding: 10px; margin-left: 0px">
+    <div class="row">
+        <div class="col">
+            <h4 style="color: white;">Bendri duomenys</h4>
+            <p style="color: white;">Krovinių skaičius: @Model.LotPositions.Count()</p>
+            <p style="color: white;">Bendras Svoris: @TotalWeight</p>
+        </div>
+    </div>
+</div>
+
+<h2 style="color: white;">Krovinių stovinčių aikštelėje sąrašas</h2>
+
+<table class="table table-dark">
+    <thead class="thead-dark">
+        <tr>
+            <th style="color: white;" scope="col">Konteinerio ID</th>
+            <th style="color: white;" scope="col">Pavadinimas</th>
+            <th style="color: white;" scope="col">Svoris</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cargo in allCargos)
+        {
+            <tr>
+                <td>
+                    @cargo.ID
+                </td>
+                <td>
+                    @cargo.Name
+                </td>
+                <td>
+                    @cargo.Weight.ToString();
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h2 style="color: white;">Grid View</h2>
+
+<div class="form-group">
+    <label for="zLayer" style="color: white;">Pasirinkite sluoksnį:</label>
+    <select id="zLayer" class="form-control" onchange="updateGrid()">
+        @for (int z = 0; z < zDim; z++)
+        {
+            <option value="@((z + 1))">@(z + 1) Sluoksnis</option>
+        }
+    </select>
+</div>
+
+<div class="lot-grid">
+    <table class="table table-bordered table-dark" id="lotTable">
+        <thead>
+            <tr>
+                <th colspan="@Model.lot.X_Dim" class="text-center">X Dimension (@Model.lot.X_Dim)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int y = 0; y < Model.lot.Y_Dim; y++)
+            {
+                <tr>
+                    @for (int x = 0; x < Model.lot.X_Dim; x++)
+                    {
+                        var position = Model.LotPositions.FirstOrDefault(p => p.X_Cord == x && p.Y_Cord == y && p.Z_Cord == 0); // Default to layer 0
+                        <td style="width: 50px; height: 50px; text-align: center; background-color: @(position != null ? "green" : "transparent");">
+                            @if (position != null)
+                            {
+                                <span>@position.CargoID</span>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .lot-grid table {
+        margin: auto;
+        background-color: #343a40;
+    }
+
+    .lot-grid td {
+        border: 1px solid #ffffff;
+    }
+</style>
+
+<script>
+    // Call updateGrid() function when the page is loaded
+    window.onload = function () {
+        updateGrid();
+    };
+
+    function updateGrid() {
+        var selectedLayer = document.getElementById("zLayer").value;
+        var table = document.getElementById("lotTable");
+        var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+        // Clear current grid
+        for (var y = 0; y < rows.length; y++) {
+            var cells = rows[y].getElementsByTagName("td");
+            for (var x = 0; x < cells.length; x++) {
+                cells[x].style.backgroundColor = "transparent";
+                cells[x].innerHTML = "";
+            }
+        }
+
+        // Update grid with new layer
+    @foreach (var position in Model.LotPositions)
+    {
+        <text>
+                    if (selectedLayer == "@position.Z_Cord") {
+                var yCord = @position.Y_Cord;
+                var xCord = @position.X_Cord;
+                var cell = rows[yCord].getElementsByTagName("td")[xCord];
+                cell.style.backgroundColor = "green";
+                cell.innerHTML = "@position.CargoID";
+            }
+        </text>
+    }
+        }
+</script>
