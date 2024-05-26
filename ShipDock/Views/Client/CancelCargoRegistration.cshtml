@@ -56,7 +56,7 @@
                 <td>
                     @if (cargo.State == "New")
                     {
-                        <form asp-controller="Client" asp-action="CancelRegistration" method="post" style="display:inline;">
+                        <form asp-controller="Client" asp-action="CancelCargoRegistration" method="post" style="display:inline;">
                             <input type="hidden" name="id" value="@cargo.ID" />
                             <button type="submit" class="btn btn-danger">Atšaukti registraciją</button>
                         </form>
@@ -66,4 +66,4 @@
         }
     </tbody>
 </table>
-<a href="@Url.Action("ViewCargoState", "Client")" class="btn btn-info">Grįžti</a>
+<a href="@Url.Action("OpenCargoList", "Client")" class="btn btn-info">Grįžti</a>

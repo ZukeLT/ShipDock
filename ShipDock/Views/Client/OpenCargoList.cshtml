@@ -60,14 +60,9 @@
                     @if (cargo.State == "Canceled" || cargo.State == "Collected")
                     {
                         <form asp-controller="Client" asp-action="DeleteCargo" method="post">
-                            <a href="@Url.Action("PreviewCargo", "Client", new { id = cargo.ID })" class="btn btn-info">Peržiūrėti</a>
                             <input type="hidden" name="id" value="@cargo.ID" />
                             <button type="submit" class="btn btn-primary" style="background-color: red; border-color: red;">Pašalinti</button>
                         </form>
-                    }
-                    else
-                    {
-                        <a href="@Url.Action("PreviewCargo", "Client", new { id = cargo.ID })" class="btn btn-info">Peržiūrėti</a>
                     }
                 </td>
             </tr>
@@ -77,5 +72,5 @@
 
 <div class="button-container">
     <a href="@Url.Action("RegisterCargo", "Client")" class="btn btn-primary">Registruoti krovinį</a>
-    <a href="@Url.Action("CancelRegistration", "Client")" class="btn btn-secondary">Atšaukti registraciją</a>
+    <a href="@Url.Action("CancelCargoRegistration", "Client")" class="btn btn-secondary">Atšaukti registraciją</a>
 </div>
