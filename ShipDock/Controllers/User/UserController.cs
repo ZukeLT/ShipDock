@@ -44,7 +44,7 @@ namespace ShipDock.Controllers.UserNamespace
         public IActionResult LogTheUserIn(string username, string password)
         {
             // Insert user login logic here
-            (bool isAuthenticated, string userRole) = AuthenticateUser(username, password);
+            (bool isAuthenticated, string userRole, string pwd) = AuthenticateUser(username, password);
 
             if (isAuthenticated)
             {
@@ -69,13 +69,50 @@ namespace ShipDock.Controllers.UserNamespace
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpGet]
+        public IActionResult OpenRemindPassword()
+        {
+            return View("RemindPassword");
+        }
+
+        [HttpPost]
+        public IActionResult RemindPassword(string username)
+        {
+            string password = GetPasswordByUsername(username);
+            if (!string.IsNullOrEmpty(password))
+            {
+                ViewBag.Password = password;
+            }
+            else
+            {
+                ViewBag.Password = "Username not found";
+            }
+
+            return View("RemindPassword");
+        }
+
+        private string GetPasswordByUsername(string username)
+        {
+            string sql = $"SELECT Password FROM [User] WHERE Username = '{username}'";
+            DataView dw = (DataView)DataSource.ExecuteSelectSQL(sql);
+
+            if (dw != null && dw.Table.Rows.Count > 0)
+            {
+                return dw.Table.Rows[0]["Password"].ToString();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         private bool RegisterUser(User user)
         {
             string sql = $"INSERT INTO [User] (Username, Password, UserRole) VALUES ('{user.Username}', '{user.Password}', 'Klientas')";
             return DataSource.UpdateDataSQL(sql);
         }
 
-        private (bool isAuthenticated, string userRole) AuthenticateUser(string username, string password)
+        private (bool isAuthenticated, string userRole, string pwd) AuthenticateUser(string username, string password)
         {
             string sql = $"SELECT * FROM [User] WHERE Username = '{username}' AND Password = '{password}'";
             DataView dw = (DataView)DataSource.ExecuteSelectSQL(sql);
@@ -84,13 +121,13 @@ namespace ShipDock.Controllers.UserNamespace
             {
                 // Assuming the user role is stored in the "UserRole" column of the "User" table
                 string userRole = dw.Table.Rows[0]["UserRole"].ToString();
-                return (true, userRole);
+                string pwd = dw.Table.Rows[0]["Password"].ToString();
+                return (true, userRole, pwd);
             }
             else
             {
-                return (false, null);
+                return (false, null, null);
             }
         }
-
     }
 }

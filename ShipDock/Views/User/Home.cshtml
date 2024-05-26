@@ -16,11 +16,11 @@ else if (TempData["ErrorMessage"] != null)
 
 @if (Context.Session.GetString("Username") == null)
 {
-    <p style="font-size: 20px;">Nesate prisijungę, sukurkite naują paskyrą arba prisijunkite</p>
+    <p style="font-size: 20px; color: white;">Nesate prisijungę, sukurkite naują paskyrą arba prisijunkite</p>
 }
 else
 {
-    <p style="font-size: 20px;">Sveiki, @Context.Session.GetString("Username")!</p>
+    <p style="font-size: 20px; color: white;">Sveiki, @Context.Session.GetString("Username")!</p>
     <form asp-action="Logout" asp-controller="User" method="post">
         <button type="submit" class="btn btn-primary">Atsijungti</button>
     </form>

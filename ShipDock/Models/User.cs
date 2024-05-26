@@ -1,4 +1,5 @@
 ﻿using ShipDock.Helper;
+using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
 namespace ShipDock.Models
