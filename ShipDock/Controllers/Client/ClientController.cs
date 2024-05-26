@@ -186,7 +186,7 @@ namespace ShipDock.Controllers.Client
             }
 
             // Redirect back to the cargo list view
-            return RedirectToAction("ViewCargoState");
+            return RedirectToAction("OpenCargoList");
         }
     }
 }
