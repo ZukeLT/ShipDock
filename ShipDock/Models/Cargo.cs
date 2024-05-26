@@ -1,4 +1,5 @@
 using ShipDock.Helper;
+using ShipDock.Helpers;
 using System;
 using System.Data;
 using System.Linq;
@@ -29,6 +30,13 @@ namespace ShipDock.Models
                     $"VALUES ('{Name}','{Code}',{Weight},'{AcceptanceDate}',{TracktorID},{UserID},{LotPositionID})");
             }
             return false;
+        }
+        public bool UpdatePositionID(int LotPositionID) 
+        {
+            return DataSource.UpdateDataSQL(
+             $"UPDATE Cargo " +
+             $"SET [LotPositionID] = {LotPositionID} " +
+             $"WHERE CargoID = {ID}");
         }
 
         private string GenerateUniqueCode()

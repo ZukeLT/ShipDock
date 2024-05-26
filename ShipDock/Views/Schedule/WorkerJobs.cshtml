@@ -84,10 +84,22 @@
         </div>
        
     </div>
+    <div>
+        <h2 style="color: white;">
+            Dispečiario matomas veiksmas (veiksai yra hardcode kad parodyti pilną functionalumą)
+        </h2>
+        <form asp-controller="LotJob" asp-action="Recalculate" method="post">
+            <button type="submit" class="btn btn-primary">Paleisti Traktorius </button>
+        </form>
+        <form asp-controller="LotJob" asp-action="AtvykoKroviniai" method="post">
+            <button type="submit" class="btn btn-primary">Atvyko Laivas į uostą</button>
+        </form>
+    </div>
 </div>
 <div id="LoadingDIV">
     @{
-        DataView dw = (DataView)DataSource.ExecuteSelectSQL($"SELECT * FROM Tracktor WHERE [Status] = '{TracktorStates.Waiting}' AND CraneID = (SELECT TOP(1) CraneID FROM Crane WHERE UserID = {loadingUser.ID})");
+        DataView dw = (DataView)DataSource.ExecuteSelectSQL($"SELECT * FROM Tracktor WHERE [Status] = '{TracktorStates.Waiting}' AND CraneID IS NOT NULL AND CargoID IS NULL");
+        //DataView dw = (DataView)DataSource.ExecuteSelectSQL($"SELECT * FROM Tracktor WHERE [Status] = '{TracktorStates.Waiting}' AND CraneID = (SELECT TOP(1) CraneID FROM Crane WHERE UserID = {loadingUser.ID})");
         List<Tracktor> tracktors = new List<Tracktor>();
         if (dw != null)
         {
@@ -142,6 +154,7 @@
                 <th style="color: white;" scope="col">Krovinio ID</th>
                 <th style="color: white;" scope="col">Krovinys</th>
                 <th style="color: white;" scope="col">Veiksmas</th>
+                <th style="color: white;" scope="col"></th>
             </tr>
         </thead>
         <tbody>
@@ -163,7 +176,7 @@
                     <td>
                         @tracktor.CargoID
                     </td>
-                    <form asp-controller="LotJob" asp-action="LoadedCargo" method="post">
+                    <form asp-controller="LotJob" asp-action="ConfirmCargoLoading" method="post">
                         <td>
                         <select class="form-control" id="cargoJSON" name="cargoJSON" required>
                                 @foreach (var cargo in cargos)
@@ -177,6 +190,13 @@
                             <input type="hidden" name="tracktorJSON" value='@Html.Raw(JsonConvert.SerializeObject(tracktor))' />
                             <button type="submit" class="btn btn-primary">Priskirti</button>
                         </td>
+                    </form>
+                    <form asp-controller="LotJob" asp-action="SendTracktorHome" method="post">
+                    <td>
+                        <input type="hidden" name="userJSON" value='@Html.Raw(JsonConvert.SerializeObject(loadingUser))' />
+                        <input type="hidden" name="tracktorJSON" value='@Html.Raw(JsonConvert.SerializeObject(tracktor))' />
+                        <button type="submit" class="btn btn-danger">Siusti namo</button>
+                    </td>
                     </form>
                 </tr>
             }
@@ -236,7 +256,7 @@
                     <td>
                         @tracktor.CargoID
                     </td>
-                    <form asp-controller="LotJob" asp-action="UnloadedCargo" method="post">
+                    <form asp-controller="LotJob" asp-action="ConfirmCargoUnloading" method="post">
                     <td>
                         @{
                                 DataView dw4 = (DataView)DataSource.ExecuteSelectSQL(

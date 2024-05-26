@@ -113,7 +113,7 @@ public class TracktorController : ControllerBase
         var query =
         $"UPDATE Tracktor SET [CraneID] = NULL, " +
         $"[CargoID] = NULL, " +
-        $"[Status] = '{Enums.TracktorStates.Returning}' , " +
+        $"[Status] = '{Enums.TracktorStates.Returning}' " +
         $"WHERE TracktorID = {id}";
         var isSuccess = DataSource.UpdateDataSQL(query);
 
