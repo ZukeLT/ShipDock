@@ -15,7 +15,7 @@ namespace ShipDock.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return View("../User/Home");
         }
 
         public IActionResult Privacy()
