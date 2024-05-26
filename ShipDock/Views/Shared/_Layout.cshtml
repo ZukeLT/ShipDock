@@ -88,39 +88,86 @@
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ShipDock</a>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="nav navbar-nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Pagrindinis</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" id="clientSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Kliento aptarnavimas
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="clientSystem">
-                                <a class="dropdown-item" asp-area="" asp-controller="Client" asp-action="OpenCargoList">Mano kroviniai</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Client" asp-action="OpenClaimCargo">Krovinio atsiėmimas</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" id="ControlSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Valdymas
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="ControlSystem">
-                                <a class="dropdown-item" asp-area="" asp-controller="Schedule" asp-action="Schedule">Laivų atvykimo grafikas</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="LotInformation" asp-action="LotInformation">Aikštelių statistika</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="LotJob" asp-action="WorkerJobs">Krano operavimas</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="LotJob" asp-action="ListOfTracktors">Traktoriu sąrašas</a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link text-dark dropdown-toggle" href="#" id="AdminSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Administratoriams
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="AdminSystem">
-                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ShipList">Laivai</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="LotList">Aikštelės</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="UserList">Darbuotojai</a>
-                            </div>
-                        </li>
+                        @if (Context.Session.GetString("UserRole") == "Klientas")
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Atsijungti</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="clientSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Kliento aptarnavimas
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="clientSystem">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Client" asp-action="OpenCargoList">Mano kroviniai</a>
+									<a class="dropdown-item" asp-area="" asp-controller="Client" asp-action="OpenClaimCargo">Krovinio atsiėmimas</a>
+                                </div>
+                            </li>
+                        }
+                        @if(Context.Session.GetString("UserRole") == "Administratorius")
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Atsijungti</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="clientSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Kliento aptarnavimas
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="clientSystem">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Client" asp-action="OpenCargoList">Mano kroviniai</a>
+									<a class="dropdown-item" asp-area="" asp-controller="Client" asp-action="OpenClaimCargo">Krovinio atsiėmimas</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="ControlSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Valdymas
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="ControlSystem">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Schedule" asp-action="Schedule">Laivų atvykimo grafikas</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="LotInformation" asp-action="LotInformation">Aikštelių statistika</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="LotJob" asp-action="WorkerJobs">Krano operavimas</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="LotJob" asp-action="ListOfTracktors">Traktoriu sąrašas</a>
+                                </div>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="AdminSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Administratoriams
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="AdminSystem">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="ShipList">Laivai</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="LotList">Aikštelės</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Admin" asp-action="UserList">Darbuotojai</a>
+                                </div>
+                            </li>
+                        }
+                        @if (Context.Session.GetString("UserRole") == "Dispeceris" 
+                        || Context.Session.GetString("UserRole") == "Darbuotojas" 
+                        || Context.Session.GetString("UserRole") == "Iškrovimo Darbuotojas"
+                        || Context.Session.GetString("UserRole") == "Pakrovimo Darbuotojas")
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Atsijungti</a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link text-dark dropdown-toggle" href="#" id="ControlSystem" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Valdymas
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="ControlSystem">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Schedule" asp-action="Schedule">Laivų atvykimo grafikas</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="LotInformation" asp-action="LotInformation">Aikštelių statistika</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="LotJob" asp-action="WorkerJobs">Krano operavimas</a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="LotJob" asp-action="ListOfTracktors">Traktoriu sąrašas</a>
+                                </div>
+                            </li>
+                        }
+                        @if(Context.Session.GetString("Username") == null)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="OpenRegisterUser">Registruotis</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="UserLogin">Prisijungti</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
