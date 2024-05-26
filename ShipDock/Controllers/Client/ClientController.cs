@@ -8,7 +8,7 @@ namespace ShipDock.Controllers.Client
 {
     public class ClientController : Controller
     {
-        public List<Cargo> CargoList()
+        public List<Cargo> SelectCargoLoad()
         {
             List<Cargo> cargoList = new List<Cargo>();
             DataView dw = (DataView)DataSource.ExecuteSelectSQL("SELECT * FROM Cargo");
@@ -26,7 +26,7 @@ namespace ShipDock.Controllers.Client
                         TracktorID = int.Parse(row["TracktorID"].ToString()),
                         UserID = int.Parse(row["UserID"].ToString()),
                         LotPositionID = int.Parse(row["LotPositionID"].ToString()),
-                        State = row["State"]?.ToString() ?? "Delivered", // Default to "Delivered" if State is null
+                        State = row["State"]?.ToString(),
                         Gate = row["Gate"]?.ToString()
                     };
 
@@ -36,9 +36,9 @@ namespace ShipDock.Controllers.Client
             return cargoList;
         }
 
-        public IActionResult ViewCargoState()
+        public IActionResult OpenCargoList()
         {
-            var cargos = CargoList();
+            var cargos = SelectCargoLoad();
             return View(cargos);
         }
 
@@ -52,7 +52,7 @@ namespace ShipDock.Controllers.Client
         {
             if (cargo.Insert()) {
                 TempData["SuccessMessage"] = "Cargo registered successfully.";
-                return RedirectToAction(nameof(ViewCargoState));
+                return RedirectToAction(nameof(OpenCargoList));
             }
             else {
                 TempData["ErrorMessage"] = "Failed to register cargo.";
@@ -60,14 +60,14 @@ namespace ShipDock.Controllers.Client
             }
         }
 
-        public IActionResult CancelRegistration()
+        public IActionResult CancelCargoRegistration()
         {
-            var cargos = CargoList();
+            var cargos = SelectCargoLoad();
             return View(cargos);
         }
 
         [HttpPost]
-        public IActionResult CancelRegistration(int id)
+        public IActionResult CancelCargoRegistration(int id)
         {
             string sql = $"UPDATE Cargo SET State = 'Canceled' WHERE CargoID = {id} AND State = 'New'";
             bool isValid = DataSource.UpdateDataSQL(sql);
@@ -79,30 +79,19 @@ namespace ShipDock.Controllers.Client
             else
             {
                 TempData["ErrorMessage"] = "Cargo can no longer be canceled.";
-                return RedirectToAction(nameof(CancelRegistration));
+                return RedirectToAction(nameof(CancelCargoRegistration));
             }
-            return RedirectToAction(nameof(ViewCargoState));
+            return RedirectToAction(nameof(OpenCargoList));
         }
 
-        public IActionResult PreviewCargo(int id)
+        public IActionResult OpenClaimCargo()
         {
-            var cargo = CargoList().FirstOrDefault(c => c.ID == id);
-            if (cargo == null)
-            {
-                TempData["ErrorMessage"] = "Cargo not found.";
-                return RedirectToAction(nameof(ViewCargoState));
-            }
-            return View(cargo);
-        }
-
-        public IActionResult CollectCargo()
-        {
-            var deliveredCargos = CargoList().Where(c => c.State == "Delivered" || c.State == "Prepared" || c.State == "Collected").ToList();
+            var deliveredCargos = SelectCargoLoad().Where(c => c.State == "Delivered" || c.State == "Prepared" || c.State == "Collected").ToList();
             return View(deliveredCargos);
         }
 
         [HttpPost]
-        public IActionResult PrepareCargo(int id)
+        public IActionResult ValidateCargoStatus(int id)
         {
             string sql = $"UPDATE Cargo SET State = 'Prepared' WHERE CargoID = {id}";
             bool isValid = DataSource.UpdateDataSQL(sql);
@@ -115,11 +104,11 @@ namespace ShipDock.Controllers.Client
             {
                 TempData["ErrorMessage"] = "Cargo not found.";
             }
-            return RedirectToAction(nameof(CollectCargo));
+            return RedirectToAction(nameof(OpenClaimCargo));
         }
 
         [HttpPost]
-        public IActionResult ShowGateInfo(int id)
+        public IActionResult ShowReadyCargoPlace(int id)
         {
             // Generate random gate
             string gateInfo = GenerateRandomGate();
@@ -137,11 +126,11 @@ namespace ShipDock.Controllers.Client
             {
                 TempData["ErrorMessage"] = "Cargo not found.";
             }
-            return RedirectToAction(nameof(CollectCargo));
+            return RedirectToAction(nameof(OpenClaimCargo));
         }
 
         [HttpPost]
-        public IActionResult ConfirmCollectedCargo(int id)
+        public IActionResult ConfirmCargoAsClaimed(int id)
         {
             string sql = $"UPDATE Cargo SET State = 'Collected' WHERE CargoID = {id}";
             bool isValid = DataSource.UpdateDataSQL(sql);
@@ -154,7 +143,7 @@ namespace ShipDock.Controllers.Client
             {
                 TempData["ErrorMessage"] = "Cargo not found.";
             }
-            return RedirectToAction(nameof(CollectCargo));
+            return RedirectToAction(nameof(OpenClaimCargo));
         }
 
         // Method to generate random gate
@@ -177,7 +166,7 @@ namespace ShipDock.Controllers.Client
         public IActionResult DeleteCargo(int id)
         {
             // Check if cargo exists and its state is "Canceled"
-            var cargo = CargoList().FirstOrDefault(c => c.ID == id && c.State == "Canceled");
+            var cargo = SelectCargoLoad().FirstOrDefault(c => c.ID == id && c.State == "Canceled");
             if (cargo != null)
             {
                 // Delete cargo from database

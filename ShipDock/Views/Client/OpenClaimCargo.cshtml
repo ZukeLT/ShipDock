@@ -62,21 +62,21 @@
                 <td>
                     @if (cargo.State == "Delivered")
                     {
-                        <form asp-controller="Client" asp-action="PrepareCargo" method="post">
+                        <form asp-controller="Client" asp-action="ValidateCargoStatus" method="post">
                             <input type="hidden" name="id" value="@cargo.ID" />
                             <button type="submit" class="btn btn-primary">Paruošti</button>
                         </form>
                     }
                     else if (cargo.State == "Prepared" && string.IsNullOrEmpty(cargo.Gate))
                     {
-                        <form asp-controller="Client" asp-action="ShowGateInfo" method="post">
+                        <form asp-controller="Client" asp-action="ShowReadyCargoPlace" method="post">
                             <input type="hidden" name="id" value="@cargo.ID" />
                             <button type="submit" class="btn btn-success">Atsiimti</button>
                         </form>
                     }
                     else if (!string.IsNullOrEmpty(cargo.Gate) && cargo.State != "Collected")
                     {
-                        <form asp-controller="Client" asp-action="ConfirmCollectedCargo" method="post">
+                        <form asp-controller="Client" asp-action="ConfirmCargoAsClaimed" method="post">
                             <input type="hidden" name="id" value="@cargo.ID" />
                             <button type="submit" class="btn btn-success">Atsiimtas</button>
                         </form>
