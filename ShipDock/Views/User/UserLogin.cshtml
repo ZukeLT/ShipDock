@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "UserLogin";
+}
+
+<h2>Prisijungimas</h2>
+
+<form action="@Url.Action("LogTheUserIn", "User")" method="post">
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Prisijungti</button>
+    <a class="btn btn-primary" href="@Url.Action("Index", "Home")">Grįžti</a>
+</form>

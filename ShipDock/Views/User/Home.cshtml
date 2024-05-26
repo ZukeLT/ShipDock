@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<h1 style="color: white;">Sveiki atvykę į ShipDock</h1>
+<h2 style="color: white;">Geriausią pasaulyje konteinerių gabenimo kompaniją!</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+else if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+@if (Context.Session.GetString("Username") == null)
+{
+    <p style="font-size: 20px;">Nesate prisijungę, sukurkite naują paskyrą arba prisijunkite</p>
+}
+else
+{
+    <p style="font-size: 20px;">Sveiki, @Context.Session.GetString("Username")!</p>
+    <form asp-action="Logout" asp-controller="User" method="post">
+        <button type="submit" class="btn btn-primary">Atsijungti</button>
+    </form>
+}
